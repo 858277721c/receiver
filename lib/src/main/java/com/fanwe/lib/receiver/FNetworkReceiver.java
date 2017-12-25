@@ -7,18 +7,13 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.fanwe.library.holder.ISDObjectsHolder;
-import com.fanwe.library.holder.SDObjectsHolder;
-import com.fanwe.library.listener.SDIterateCallback;
-
 import java.util.Iterator;
 
 /**
  * 网络变化监听
  */
-public class SDNetworkReceiver extends BroadcastReceiver
+public class FNetworkReceiver extends BroadcastReceiver
 {
-
     public final static String FANWE_ANDROID_NET_CHANGE_ACTION = "fanwe.android.net.conn.CONNECTIVITY_CHANGE";
 
     private static BroadcastReceiver sReceiver;
@@ -49,7 +44,7 @@ public class SDNetworkReceiver extends BroadcastReceiver
     {
         if (sReceiver == null)
         {
-            sReceiver = new SDNetworkReceiver();
+            sReceiver = new FNetworkReceiver();
         }
         return sReceiver;
     }
