@@ -13,15 +13,13 @@ import android.net.NetworkInfo;
  */
 public abstract class FNetworkReceiver extends FBroadcastReceiver
 {
-    public final static String FANWE_ANDROID_NET_CHANGE_ACTION = "com.fanwe.android.net.conn.CONNECTIVITY_CHANGE";
-
     @Override
     public void onReceive(Context context, Intent intent)
     {
         String action = intent.getAction();
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action) || FANWE_ANDROID_NET_CHANGE_ACTION.equals(action))
+        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action))
         {
-            final int type = getNetworkType(context);
+            int type = getNetworkType(context);
             onNetworkChanged(type);
         }
     }
@@ -38,35 +36,10 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
     {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(FANWE_ANDROID_NET_CHANGE_ACTION);
         context.registerReceiver(this, filter);
     }
 
-    /**
-     * 发送网络检测广播
-     *
-     * @param context
-     */
-    public static void sendBroadcast(Context context)
-    {
-        Intent intent = new Intent();
-        intent.setAction(FANWE_ANDROID_NET_CHANGE_ACTION);
-        context.sendBroadcast(intent);
-    }
-
     //----------utils----------
-
-    /**
-     * 获得ConnectivityManager对象
-     *
-     * @param context
-     * @return
-     */
-    public static ConnectivityManager getConnectivityManager(Context context)
-    {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return manager;
-    }
 
     /**
      * 网络是否可用
@@ -76,7 +49,7 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static boolean isNetworkConnected(Context context)
     {
-        ConnectivityManager manager = getConnectivityManager(context);
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = manager.getActiveNetworkInfo();
         if (info != null)
         {
@@ -95,7 +68,7 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static boolean isWifiConnected(Context context)
     {
-        ConnectivityManager manager = getConnectivityManager(context);
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         if (networkInfo == null)
         {
@@ -114,7 +87,7 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static int getNetworkType(Context context)
     {
-        ConnectivityManager manager = getConnectivityManager(context);
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         if (networkInfo == null)
         {
@@ -125,15 +98,4 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
             return type;
         }
     }
-
-    public interface SDNetworkCallback
-    {
-        /**
-         * 网络变化监听
-         *
-         * @param type {@link ConnectivityManager}
-         */
-        void onNetworkChanged(int type);
-    }
-
 }
