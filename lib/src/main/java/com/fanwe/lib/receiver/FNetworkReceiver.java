@@ -1,52 +1,45 @@
 package com.fanwe.lib.receiver;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import java.util.Iterator;
-
 /**
  * 网络变化监听
+ * <p>
+ * <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
  */
-public class FNetworkReceiver extends BroadcastReceiver
+public abstract class FNetworkReceiver extends FBroadcastReceiver
 {
-    public final static String FANWE_ANDROID_NET_CHANGE_ACTION = "fanwe.android.net.conn.CONNECTIVITY_CHANGE";
-
-    private static BroadcastReceiver sReceiver;
-    private static ISDObjectsHolder<SDNetworkCallback> sCallbackHolder = new SDObjectsHolder<>();
+    public final static String FANWE_ANDROID_NET_CHANGE_ACTION = "com.fanwe.android.net.conn.CONNECTIVITY_CHANGE";
 
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        sReceiver = this;
-
         String action = intent.getAction();
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action) || FANWE_ANDROID_NET_CHANGE_ACTION.equals(action))
         {
             final int type = getNetworkType(context);
-            sCallbackHolder.foreach(new SDIterateCallback<SDNetworkCallback>()
-            {
-                @Override
-                public boolean next(int i, SDNetworkCallback item, Iterator<SDNetworkCallback> it)
-                {
-                    item.onNetworkChanged(type);
-                    return false;
-                }
-            });
+            onNetworkChanged(type);
         }
     }
 
-    public static BroadcastReceiver getReceiver()
+    /**
+     * 网络变化监听
+     *
+     * @param type {@link ConnectivityManager}
+     */
+    protected abstract void onNetworkChanged(int type);
+
+    @Override
+    public void register(Context context)
     {
-        if (sReceiver == null)
-        {
-            sReceiver = new FNetworkReceiver();
-        }
-        return sReceiver;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(FANWE_ANDROID_NET_CHANGE_ACTION);
+        context.registerReceiver(this, filter);
     }
 
     /**
@@ -59,57 +52,6 @@ public class FNetworkReceiver extends BroadcastReceiver
         Intent intent = new Intent();
         intent.setAction(FANWE_ANDROID_NET_CHANGE_ACTION);
         context.sendBroadcast(intent);
-    }
-
-    /**
-     * 注册广播
-     *
-     * @param context
-     */
-    public static void registerReceiver(Context context)
-    {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        filter.addAction(FANWE_ANDROID_NET_CHANGE_ACTION);
-        context.getApplicationContext().registerReceiver(getReceiver(), filter);
-    }
-
-    /**
-     * 取消注册广播
-     *
-     * @param context
-     */
-    public static void unregisterReceiver(Context context)
-    {
-        if (sReceiver != null)
-        {
-            try
-            {
-                context.getApplicationContext().unregisterReceiver(sReceiver);
-            } catch (Exception e)
-            {
-            }
-        }
-    }
-
-    /**
-     * 添加回调
-     *
-     * @param callback
-     */
-    public static void addCallback(SDNetworkCallback callback)
-    {
-        sCallbackHolder.add(callback);
-    }
-
-    /**
-     * 移除回调
-     *
-     * @param callback
-     */
-    public static void removeCallback(SDNetworkCallback callback)
-    {
-        sCallbackHolder.remove(callback);
     }
 
     //----------utils----------
