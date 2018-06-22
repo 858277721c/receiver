@@ -17,7 +17,7 @@ public abstract class FNetworkReceiver extends BaseBroadcastReceiver
         final String action = intent.getAction();
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action))
         {
-            int type = getNetworkType(context);
+            final int type = getNetworkType(context);
             onNetworkChanged(type);
         }
     }
