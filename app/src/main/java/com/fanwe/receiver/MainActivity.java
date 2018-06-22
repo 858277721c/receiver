@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity
         mNetworkReceiver.register(this);
     }
 
-    private FHeadsetPlugReceiver mHeadsetPlugReceiver = new FHeadsetPlugReceiver()
+    private final FHeadsetPlugReceiver mHeadsetPlugReceiver = new FHeadsetPlugReceiver()
     {
         @Override
         protected void onHeadsetPlugChange(boolean plug)
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    private FNetworkReceiver mNetworkReceiver = new FNetworkReceiver()
+    private final FNetworkReceiver mNetworkReceiver = new FNetworkReceiver()
     {
         @Override
         protected void onNetworkChanged(int type)
