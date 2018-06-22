@@ -11,12 +11,12 @@ import android.net.NetworkInfo;
  * <br>
  * <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
  */
-public abstract class FNetworkReceiver extends FBroadcastReceiver
+public abstract class FNetworkReceiver extends BaseBroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        String action = intent.getAction();
+        final String action = intent.getAction();
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action))
         {
             int type = getNetworkType(context);
@@ -34,12 +34,18 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
     @Override
     public void register(Context context)
     {
-        IntentFilter filter = new IntentFilter();
+        final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(this, filter);
     }
 
     //----------utils----------
+
+    private static NetworkInfo getActiveNetworkInfo(Context context)
+    {
+        final ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return manager.getActiveNetworkInfo();
+    }
 
     /**
      * 网络是否可用
@@ -49,15 +55,11 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static boolean isNetworkConnected(Context context)
     {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
-        if (info != null)
-        {
-            return info.isConnected();
-        } else
-        {
+        final NetworkInfo info = getActiveNetworkInfo(context);
+        if (info == null)
             return false;
-        }
+
+        return info.isConnected();
     }
 
     /**
@@ -68,15 +70,11 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static boolean isWifiConnected(Context context)
     {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo == null)
-        {
+        final NetworkInfo info = getActiveNetworkInfo(context);
+        if (info == null)
             return false;
-        } else
-        {
-            return ConnectivityManager.TYPE_WIFI == networkInfo.getType();
-        }
+
+        return info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     /**
@@ -87,15 +85,10 @@ public abstract class FNetworkReceiver extends FBroadcastReceiver
      */
     public static int getNetworkType(Context context)
     {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo == null)
-        {
+        final NetworkInfo info = getActiveNetworkInfo(context);
+        if (info == null)
             return -1;
-        } else
-        {
-            int type = networkInfo.getType();
-            return type;
-        }
+
+        return info.getType();
     }
 }

@@ -8,14 +8,14 @@ import android.media.AudioManager;
 /**
  * 耳机插拔监听
  */
-public abstract class FHeadsetPlugReceiver extends FBroadcastReceiver
+public abstract class FHeadsetPlugReceiver extends BaseBroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent)
     {
         if (intent.hasExtra("state"))
         {
-            int state = intent.getIntExtra("state", 0);
+            final int state = intent.getIntExtra("state", 0);
             onHeadsetPlugChange(state == 1);
         }
     }
@@ -30,7 +30,7 @@ public abstract class FHeadsetPlugReceiver extends FBroadcastReceiver
     @Override
     public void register(Context context)
     {
-        IntentFilter filter = new IntentFilter();
+        final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_HEADSET_PLUG);
         context.registerReceiver(this, filter);
     }
@@ -43,7 +43,7 @@ public abstract class FHeadsetPlugReceiver extends FBroadcastReceiver
      */
     public static boolean isHeadsetPlug(Context context)
     {
-        AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        final AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         return manager.isWiredHeadsetOn();
     }
 }

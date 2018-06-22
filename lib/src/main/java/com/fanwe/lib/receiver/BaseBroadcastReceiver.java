@@ -3,7 +3,7 @@ package com.fanwe.lib.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 
-public abstract class FBroadcastReceiver extends BroadcastReceiver
+public abstract class BaseBroadcastReceiver extends BroadcastReceiver
 {
     /**
      * 注册广播
