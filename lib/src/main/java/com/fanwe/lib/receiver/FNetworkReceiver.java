@@ -8,8 +8,6 @@ import android.net.NetworkInfo;
 
 /**
  * 网络变化监听
- * <br>
- * <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
  */
 public abstract class FNetworkReceiver extends BaseBroadcastReceiver
 {
