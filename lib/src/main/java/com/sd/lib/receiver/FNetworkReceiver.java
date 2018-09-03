@@ -1,4 +1,4 @@
-package com.fanwe.lib.receiver;
+package com.sd.lib.receiver;
 
 import android.content.Context;
 import android.content.Intent;
