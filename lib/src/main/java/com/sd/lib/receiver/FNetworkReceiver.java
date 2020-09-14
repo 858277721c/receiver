@@ -30,11 +30,12 @@ public abstract class FNetworkReceiver extends BaseBroadcastReceiver
     protected abstract void onNetworkChanged(int type);
 
     @Override
-    public void register(Context context)
+    protected boolean registerImpl(Context context)
     {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(this, filter);
+        return true;
     }
 
     //----------utils----------

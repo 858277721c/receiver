@@ -28,11 +28,12 @@ public abstract class FHeadsetPlugReceiver extends BaseBroadcastReceiver
     protected abstract void onHeadsetPlugChange(boolean plug);
 
     @Override
-    public void register(Context context)
+    protected boolean registerImpl(Context context)
     {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_HEADSET_PLUG);
         context.registerReceiver(this, filter);
+        return true;
     }
 
     /**
